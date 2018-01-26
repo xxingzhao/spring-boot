@@ -1,0 +1,33 @@
+# Java #
+*.class
+classes/
+target/
+
+# Eclipse #
+.classpath
+.project
+.settings
+.metadata
+bin/
+
+# idea #
+*.iml
+.idea/
+*.iws
+*.ipr
+.ideaDataSources/
+out/
+
+# resources #
+src/main/resources/static/
+src/main/resources/templates/
+
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.tmp
+*.bak
+*.swp
+
