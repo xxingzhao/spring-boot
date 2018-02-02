@@ -41,10 +41,12 @@ public class ReflectionUtil {
      */
     public static List<Method> setterList(Class clazz) {
         List<Method> list = new ArrayList<Method>();
-        Field[] fields = clazz.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field =  fields[i];
-            list.add(setter(clazz, field));
+        Method[] setters = clazz.getDeclaredMethods();
+        for(Method method : setters) {
+            String name = method.getName();
+            if(name.startsWith("set") && method.getParameterTypes().length == 1) {
+                list.add(method);
+            }
         }
         return list;
     }
@@ -56,10 +58,12 @@ public class ReflectionUtil {
      */
     public static List<Method> getterList(Class clazz) {
         List<Method> list = new ArrayList<Method>();
-        Field[] fields = clazz.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field =  fields[i];
-            list.add(getter(clazz, field));
+        Method[] methods = clazz.getDeclaredMethods();
+        for(Method getter : methods) {
+            String name = getter.getName();
+            if(name.startsWith("get") && getter.getParameterTypes().length == 0) {
+                list.add(getter);
+            }
         }
         return list;
     }
@@ -69,13 +73,23 @@ public class ReflectionUtil {
      * @return
      */
     public static Map<String, Method> getters(Class clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        Map<String, Method> getters = new HashMap<String, Method>();
-        for(Field field : fields) {
-            Method method = getter(clazz, field);
-            getters.put(field.getName(), method);
+        Map<String, Method> getterMap = new HashMap<String, Method>();
+        List<Method> getterList = getterList(clazz);
+        for(Method method : getterList) {
+            getterMap.put(field(method), method);
         }
-        return getters;
+        return getterMap;
+    }
+
+    public static String field(Method method) {
+        String name = null;
+        if(method.getName().startsWith("is")) {
+            name = method.getName().substring(2);
+        } else {
+            name = method.getName().substring(3);
+        }
+        String fieldName = name.substring(0,1).toLowerCase() + name.substring(1);
+        return fieldName;
     }
 
     /**
@@ -84,13 +98,12 @@ public class ReflectionUtil {
      * @return
      */
     public static Map<String, Method> setters(Class clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        Map<String, Method> setters = new HashMap<String, Method>();
-        for(Field field : fields) {
-            Method method = setter(clazz, field);
-            setters.put(field.getName(), method);
+        Map<String, Method> setterMap = new HashMap<String, Method>();
+        List<Method> methodList =  setterList(clazz);
+        for(Method method : methodList) {
+            setterMap.put(field(method), method);
         }
-        return setters;
+        return setterMap;
     }
     /**
      * 获取get 方法
@@ -152,6 +165,35 @@ public class ReflectionUtil {
         }
         return sb.toString();
     }
+
+    /**
+     * 获取字段名-field 集合
+     * @param clazz
+     * @return
+     */
+    public static Map<String, Field> fieldToMaps(Class clazz) {
+        Map<String, Field> fieldMap = new HashMap<>();
+        Field[] fields = clazz.getDeclaredFields();
+        for(Field field : fields) {
+            fieldMap.put(field.getName(), field);
+        }
+        return fieldMap;
+    }
+
+    /**
+     * 表字段column - field 集合
+     * @param clazz
+     * @return
+     */
+    public static Map<String, Field> fielToCloumnMaps(Class clazz) {
+        Map<String, Field> fieldMap = new HashMap<>();
+        Field[] fields = clazz.getDeclaredFields();
+        for(Field field : fields) {
+            fieldMap.put(ReflectionUtil.fieldToCloumn(field.getName()), field);
+        }
+        return fieldMap;
+    }
+
 
 
     public static void main(String[] args) throws Exception{

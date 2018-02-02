@@ -17,20 +17,12 @@ public class User {
     private String passWord;
     private String nickName;
     private String phone;
-    private String ddddd;
 
 
 
     public User() {
     }
 
-    public String getDdddd() {
-        return ddddd;
-    }
-
-    public void setDdddd(String ddddd) {
-        this.ddddd = ddddd;
-    }
 
     public Integer getId() {
         return id;
